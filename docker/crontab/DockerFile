@@ -1,0 +1,28 @@
+# Baseado no Debian Slim
+FROM debian:bullseye-slim
+
+# Atualiza o sistema e instala o curl e o cron
+RUN apt-get update && apt-get install -y curl cron && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y procps && rm -rf /var/lib/apt/lists/*
+
+
+# Adicione o arquivo cron
+COPY ../docker/crontab/files/file /etc/cron.d/file
+
+# Dê permissão de execução
+RUN chmod 0644 /etc/cron.d/file
+
+# Crie o log (opcional)
+RUN touch /var/log/cron.log
+
+RUN chmod 0777 /var/log/cron.log
+
+
+RUN mkdir /scripts
+# Copie o script de entrada para o contêiner e torne-o executável
+COPY ../docker/crontab/scripts/entrypoint.sh /scripts/entrypoint.sh
+RUN chmod +x /scripts/entrypoint.sh
+
+# Defina o script como ponto de entrada
+ENTRYPOINT ["/scripts/entrypoint.sh"]
