@@ -20,17 +20,16 @@ services:
       - APP_KEY=base64:OPmiGw1z2z+RrAorpa0nTNTNMIfzSPJMZBmxUDaeErE=
     depends_on:
       - db
-
   crontab:
     build:
       context: ./
       dockerfile: docker/crontab/DockerFile
     container_name: dewtech-cronjob
-    restart: unless-stopped
+    restart: always
     working_dir: /etc/cron.d
     volumes:
       - ./docker/crontab/files:/etc/cron.d
-      - ./docker/crontab/scripts:/scritps
+      - ./docker/crontab/scripts:/scriptcron
   nginx:
     image: nginx:1.25.1-alpine-slim
     container_name: dewtech-nginx
